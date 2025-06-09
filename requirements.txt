@@ -1,0 +1,9 @@
+teams-ai 
+uvicorn==0.34.2
+aiohttp==3.9.3
+botbuilder-core
+botbuilder-schema
+requests==2.32.3
+gunicorn==23.0.0
+azure-identity
+azure-storage-blob

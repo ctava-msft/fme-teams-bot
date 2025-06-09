@@ -1,0 +1,45 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.19",
+  "version": "1.0.4",
+  "id": "c5150f2f-f4ca-4e21-bfa4-b7cca6cb6b78",
+  "developer": {
+    "name": "Microsoft",
+    "websiteUrl": "https://github.com/Azure/GPT-RAG",
+    "privacyUrl": "https://github.com/Azure/GPT-RAG",
+    "termsOfUseUrl": "https://github.com/Azure/GPT-RAG"
+  },
+  "icons": {
+    "color": "ChatFME_Logo_V1.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "FME ChatBot",
+    "full": "Chat with your medical data using Azure OpenAI + Cognitive Search"
+  },
+  "description": {
+    "short": "ChatGPT + SharePoint data with Azure OpenAI and Cognitive Search",
+    "full": "ChatGPT + SharePoint data with Azure OpenAI and Cognitive Search"
+  },
+  "accentColor": "#FFFFFF",
+  "bots": [
+    {
+      "botId": "c5150f2f-f4ca-4e21-bfa4-b7cca6cb6b78",
+      "scopes": ["personal"],
+      "supportsFiles": false,
+      "isNotificationOnly": false
+    }
+  ],
+  "permissions": ["identity", "messageTeamMembers"],
+  "validDomains": [
+    "token.botframework.com",
+    "*.ngrok-free.app",
+    "*.ngrok.io",
+    "*.azurewebsites.net"
+  ],
+  "webApplicationInfo": {
+    "id": "c5150f2f-f4ca-4e21-bfa4-b7cca6cb6b78",
+    "resource": "api://botid-c5150f2f-f4ca-4e21-bfa4-b7cca6cb6b78"
+  }
+}
+ 
