@@ -10,11 +10,11 @@
     "termsOfUseUrl": "https://github.com/Azure/GPT-RAG"
   },
   "icons": {
-    "color": "ChatFME_Logo_V1.png",
+    "color": "Chat_Logo_V1.png",
     "outline": "outline.png"
   },
   "name": {
-    "short": "FME ChatBot",
+    "short": "ChatBot",
     "full": "Chat with your medical data using Azure OpenAI + Cognitive Search"
   },
   "description": {
@@ -24,7 +24,7 @@
   "accentColor": "#FFFFFF",
   "bots": [
     {
-      "botId": "c5150f2f-f4ca-4e21-bfa4-b7cca6cb6b78",
+      "botId": "<redacted>",
       "scopes": ["personal"],
       "supportsFiles": false,
       "isNotificationOnly": false
@@ -38,8 +38,8 @@
     "*.azurewebsites.net"
   ],
   "webApplicationInfo": {
-    "id": "c5150f2f-f4ca-4e21-bfa4-b7cca6cb6b78",
-    "resource": "api://botid-c5150f2f-f4ca-4e21-bfa4-b7cca6cb6b78"
+    "id": "<redacted>",
+    "resource": "api://botid-<redacted>"
   }
 }
  

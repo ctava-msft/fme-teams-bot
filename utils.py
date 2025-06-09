@@ -36,7 +36,7 @@ async def get_user_group(token: str) -> dict:
                 return "Unknown User"
 
 
-async def generate_answer(conversation_id:str, user_query: str, client_principal_id, client_principal_name, client_group_names) -> str:
+async def generate_answer(conversation_id:str, user_query: str, client_principal_id, client_principal_name, client_group_names, is_work_mode: bool = True) -> str:
     try:
         url = os.environ.get("ORC_URL")
         function_key = os.environ.get("FUNCTION_KEY")
@@ -45,7 +45,8 @@ async def generate_answer(conversation_id:str, user_query: str, client_principal
             "question": user_query,
             "client_principal_id": client_principal_id,
             "client_principal_name": client_principal_name,
-            "client_group_names": client_group_names
+            "client_group_names": client_group_names,
+            "is_work_mode": is_work_mode
         }
         headers = {
             'Content-Type': 'application/json',
@@ -106,7 +107,7 @@ def convert_citations(citations: List[str]) -> List[Dict[str, str]]:
         for citation in citations
     ]
 
-def build_citation_card(answer_text: str, citations: List[Dict[str, str]]) -> Attachment:
+def build_citation_card(answer_text: str, citations: List[Dict[str, str]], is_work_mode: bool = True) -> Attachment:
     actions = [
         {
             "type": "Action.OpenUrl",
@@ -124,9 +125,46 @@ def build_citation_card(answer_text: str, citations: List[Dict[str, str]]) -> At
                 "type": "TextBlock",
                 "text": answer_text,
                 "wrap": True
+            },
+            {
+                "type": "Container",
+                "items": [
+                    {
+                        "type": "TextBlock",
+                        "text": "Mode:",
+                        "weight": "Bolder",
+                        "size": "Small"
+                    },
+                    {
+                        "type": "Input.Toggle",
+                        "id": "workModeToggle",
+                        "title": "Work Mode",
+                        "value": str(is_work_mode).lower(),
+                        "valueOn": "true",
+                        "valueOff": "false"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Work Mode: Professional responses | Chat Mode: Casual conversation",
+                        "size": "Small",
+                        "color": "Accent",
+                        "wrap": True
+                    }
+                ]
             }
         ],
-        "actions": actions
+        "actions": actions + [
+            {
+                "type": "Action.Submit",
+                "title": "👍 Helpful",
+                "data": {"action": "feedback", "feedback": "helpful", "is_work_mode": is_work_mode}
+            },
+            {
+                "type": "Action.Submit",
+                "title": "👎 Not Helpful",
+                "data": {"action": "feedback", "feedback": "not_helpful", "is_work_mode": is_work_mode}
+            }
+        ]
     }
 
     return Attachment(

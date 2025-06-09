@@ -96,28 +96,43 @@ async def conversation_update(context: TurnContext, state: TurnState[Conversatio
 async def on_message(
     context: TurnContext, _state: TurnState[ConversationState, UserState, TempState]
 ):
-    if isinstance(context.activity.value, dict) and "action" in context.activity.value and context.activity.value["action"] == "submit_feedback":
-        user_id = context.activity.from_property.id
-        conversation_id = context.activity.conversation.id
-        feedback = context.activity.value.get("feedback", "")
-        additional_feedback = context.activity.value.get("feedbackText", "")
-        save_feedback_to_db(user_id, conversation_id, feedback, additional_feedback)
-        await context.send_activity("Thank you for your feedback!")
-        return True
+    # Handle feedback submissions
+    if isinstance(context.activity.value, dict) and "action" in context.activity.value:
+        if context.activity.value["action"] == "submit_feedback":
+            user_id = context.activity.from_property.id
+            conversation_id = context.activity.conversation.id
+            feedback = context.activity.value.get("feedback", "")
+            additional_feedback = context.activity.value.get("feedbackText", "")
+            save_feedback_to_db(user_id, conversation_id, feedback, additional_feedback)
+            await context.send_activity("Thank you for your feedback!")
+            return True
+        elif context.activity.value["action"] == "feedback":
+            feedback = context.activity.value.get("feedback", "")
+            is_work_mode = context.activity.value.get("is_work_mode", True)
+            await handle_feedback(context, feedback, is_work_mode)
+            return True
+    
+    # Get work mode from toggle if present, default to True
+    is_work_mode = True
+    if isinstance(context.activity.value, dict) and "workModeToggle" in context.activity.value:
+        is_work_mode = context.activity.value.get("workModeToggle", "true").lower() == "true"
+    
     groups = await get_user_group(_state.temp.auth_tokens["graph"])
-    # logging.error(f"groups are {groups}")
-    answer = await generate_answer(context.activity.conversation.id, context.activity.text, context.activity.from_property.aad_object_id, context.activity.from_property.name ,groups)
+    answer = await generate_answer(
+        context.activity.conversation.id, 
+        context.activity.text, 
+        context.activity.from_property.aad_object_id, 
+        context.activity.from_property.name, 
+        groups,
+        is_work_mode
+    )
     citation_file_references = get_citations(answer)
     citations = convert_citations(citation_file_references)
-# reply_text = format_answer_for_teams(answer, citations)
-    card_attachment = build_citation_card(answer, citations)
+    card_attachment = build_citation_card(answer, citations, is_work_mode)
 
-    # logging.info(f"reply text {reply_text}")
     reply = Activity(
         type=ActivityTypes.message,
-        # text = reply_text,
         attachments=[card_attachment]
-        # text =  f"payload details {context.activity.conversation.id}, {context.activity.text}, {context.activity.from_property.aad_object_id}, {context.activity.from_property.name} ,{groups},  ",
     )
     await context.send_activity(reply)
     return False
